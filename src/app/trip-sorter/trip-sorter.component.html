@@ -1,0 +1,63 @@
+<div class="container jumbotron" style="width:800px;">
+  <h1 class="display-4 text-center">TRIP SORTER</h1>
+  <form *ngIf="!viewTripResult">
+    <div class="alert alert-danger" *ngIf="isError">
+      {{errorMessage}}
+    </div>
+    <div class="form-group">
+      <label for="from" class="control-label">From:</label>
+      <div class="bootstrap-typeahead clearfix open" style="position: relative;">
+        <div class="bootstrap-typeahead-input" tabindex="-1" style="outline: none; position: relative;">
+          <input type="text" name="from" id="from" [(ngModel)]="departureCitySelected"
+                 [typeahead]="cities" autocomplete="off" class="form-control bootstrap-typeahead-input-main">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="to" class="control-label">To:</label>
+      <div class="bootstrap-typeahead clearfix open" style="position: relative;">
+        <div class="bootstrap-typeahead-input" tabindex="-1" style="outline: none; position: relative;">
+          <input type="text" id="to" name="to" [(ngModel)]="arrivalCitySelected"
+                 [typeahead]="cities" autocomplete="off" class="form-control bootstrap-typeahead-input-main">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="btn-group btn-group-justified">
+        <a href="javascript:void(0);" id="cheapest_button" class="active btn btn-primary" role="button" value="price" (click)="tripSortType($event, 'price')">Cheapest</a>
+        <a href="javascript:void(0);" id="fastest_button" class="btn btn-primary" role="button" value="minutes" (click)="tripSortType($event, 'minutes')">Fastest</a>
+      </div>
+      <input type="hidden" value="cheapest" id="type">
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-lg btn-success" (click)="searchTrip();">
+        <i class="glyphicon glyphicon-search"></i> SEARCH TRIP
+      </button>
+    </div>
+  </form>
+
+  <div class="trip-wrapper" *ngIf="viewTripResult">
+    <p>The {{sortTypeSelected}} trip from <strong class="destination">{{departureCitySelected}}</strong> to
+      <strong class="destination">{{arrivalCitySelected}}</strong> will take around
+      <strong>{{totalTripTime}}</strong> and will cost you about
+      <strong class="price">{{totalTripPrice}} {{currency}}</strong>
+    </p>
+    <div class="trip-item" *ngFor="let trip of tripData; let i = index; let isLast = last">
+      <div class="trip-item-title destination">{{trip.departure}}</div>
+      <div class="trip-item-details">
+        <div class="trip-item-details-transport">
+          <i class="fa fa-fw fa-{{trip.transport}}" tooltip="{{trip.transport | uppercase}}"></i>
+        </div>
+        <div>
+          <i class="glyphicon glyphicon-time"></i> {{trip.time}} - <span class="price"> {{trip.price}} {{currency}} </span>
+        </div>
+      </div>
+      <div class="trip-item-title destination" *ngIf="isLast">{{trip.arrival}}</div>
+    </div>
+    <br><br>
+    <button type="button" class="btn btn-lg btn-danger" (click)="resetTrip()"><i class="glyphicon glyphicon-repeat"></i> RESET TRIP</button>
+  </div>
+</div>
